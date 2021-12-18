@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context=".MatchgamePlayFragment"
+android:weightSum="3">
+
+<LinearLayout
+    android:id="@+id/linearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    app:layout_constraintTop_toTopOf="parent"
+    tools:layout_editor_absoluteX="1dp"
+    android:layout_weight="1"
+    android:weightSum="2">
+    <TextView
+        android:id="@+id/clickCnt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Clicks: 0"
+        android:hint="Click Count"
+        android:textAllCaps="true"
+        android:textColor="#E34E2A"
+        android:textSize="24sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/matchCnt"
+        tools:layout_editor_absoluteX="1dp"
+        android:layout_weight="1"
+        />
+
+    <TextView
+        android:id="@+id/matchCnt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Matches: 0"
+        android:hint="Match Count"
+        android:textAllCaps="true"
+        app:layout_constraintTop_toBottomOf="@+id/clickCnt"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:textColor="#E34E2A"
+        android:textSize="24sp"
+        android:textStyle="bold|italic"
+        tools:layout_editor_absoluteX="1dp"
+        android:layout_weight="1"/>
+</LinearLayout>
+
+<HorizontalScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:layout_weight="2">
+    <GridLayout
+        android:id="@+id/rooLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:adjustViewBounds="true"
+        android:orientation="horizontal"></GridLayout>
+</HorizontalScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
