@@ -10,12 +10,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.GridLayout;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
@@ -108,7 +109,7 @@ public class HomeGameFragment extends Fragment {
     ViewPager2 mViewPager;
     TabLayout tabLayout;
     RecyclerView highscoreRecyclerView;
-    GridLayout gridLayout;
+//    LinearLayout mainLinearLayout;
 
     Button toggleHSBoard;
     String hsBoardSetting="USER";//GLOBAL
@@ -140,7 +141,6 @@ public class HomeGameFragment extends Fragment {
                         }
 
 
-                        // gridLayout.setAdapter(highScoreRecyclerFragmentAdapter);
                     }
                 });
                 try {
@@ -175,8 +175,9 @@ public class HomeGameFragment extends Fragment {
 
         highscoreRecyclerView = (RecyclerView) rootView.findViewById(R.id.score_recycler_view);
         mViewPager = (ViewPager2) rootView.findViewById(R.id.pager);
-        gridLayout = (GridLayout) rootView.findViewById(R.id.high_score_grid);
         tabLayout = (TabLayout) rootView.findViewById(R.id.game_tabs);
+
+        // mainLinearLayout = (LinearLayout) rootView.findViewById(R.id.main_home_game_layout);
 
         Log.d("ONCREATEVIEW","");
 
@@ -191,12 +192,13 @@ public class HomeGameFragment extends Fragment {
         highscoreRecyclerView.setAdapter(highScoreRecyclerFragmentAdapter);
         highscoreRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
+        // descriptionText.setMovementMethod(new ScrollingMovementMethod());
+
 
         // background thread for view pager adapting and animation
         backgroundThread(rootView);
 
         // Setup Views for High Score grid
-        gridLayout = rootView.findViewById(R.id.high_score_grid);
         toggleHSBoard = rootView.findViewById(R.id.toggle_highscore_grid);
         toggleHSBoard.setOnClickListener(new View.OnClickListener() {
             @Override
