@@ -10,6 +10,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.transition.Fade;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
@@ -31,6 +32,7 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
+    MediaPlayer mp;
     ImageView logoImageView;
     TextView titleTextView;
 
@@ -40,58 +42,69 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        MediaPlayer mp = MediaPlayer.create(getBaseContext(), R.raw.gamehouse_gallery_start_tune);
-        mp.start();
-
+        // User Auth
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-
-        StorageReference pathReference = FirebaseStorage.getInstance().getReference(getString(R.string.gamehouse_gallery_logo));
-        pathReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                Picasso.get().load(uri).transform(new CircleTransform()).into(logoImageView);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
         logoImageView = (ImageView) findViewById(R.id.gameGallLogo);
         titleTextView = (TextView) findViewById(R.id.gameGallTitle);
         titleTextView.setText(getString(R.string.app_name));
 
-        animateView(titleTextView);
-
-        new CountDownTimer(7000, 10) {
-
+        new CountDownTimer(2000, 2000) {
             public void onTick(long millisUntilFinished) {
-                Random rnd = new Random();
-                int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
-                titleTextView.setTextColor(color);
+                // Opening Game announced
+                mp = MediaPlayer.create(getBaseContext(), R.raw.gamehouse_gallery_start_tune);
+                mp.start();
+                // Get Title Logo w/ Picasso
+                StorageReference pathReference = FirebaseStorage.getInstance().getReference(getString(R.string.gamehouse_gallery_logo));
+                pathReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+//                        Picasso.get().load(uri).transform(new CircleTransform()).into(logoImageView);
+                        Picasso.get().load(uri).into(logoImageView);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                // Set view objs
+                // Animate Title
+                animateView(titleTextView);
+                strobeEffect(titleTextView);
             }
 
             public void onFinish() {
-                titleTextView.setTextColor(getResources().getColor(R.color.red_orange));
-                mp.release();
-                // Initialize Firebase Auth
-          /* mAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
-                @Override
-                public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-
-                }
-            });*/
+                mp =MediaPlayer.create(getBaseContext(), R.raw.victory_trumpet);
+                mp.start();
             }
         }.start();
 
     }
 
+    private void strobeEffect(TextView thisView){
+        // Set to mk
+        new CountDownTimer(5000, 5) {
+
+            public void onTick(long millisUntilFinished) {
+                // Change Opening Title Color at random
+                Random rnd = new Random();
+                int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+                thisView.setTextColor(color);
+            }
+
+            public void onFinish() {
+                titleTextView.setTextColor(getResources().getColor(R.color.red_orange));
+                mp.release();
+            }
+        }.start();
+    }
+
     private void animateView(View thisView){
         thisView.animate();
         RotateAnimation rotate = new RotateAnimation(0, 1080, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        rotate.setDuration(1000);
+        rotate.setDuration(3000);
         rotate.setInterpolator(new LinearInterpolator());
         thisView.startAnimation(rotate);
     }
@@ -99,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        new CountDownTimer(3000, 1000) {
+        new CountDownTimer(6000, 1000) {
 
             public void onTick(long millisUntilFinished) {
 

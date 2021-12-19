@@ -125,7 +125,7 @@ public class MatchgamePlayFragment extends Fragment {
                     // UPDATE CLICK COUNT
                     updateClickCnt();
 
-                    new CountDownTimer(300, 300) {
+                    new CountDownTimer(650, 650) {
                         public void onTick(long millisUntilFinished) {
                             // WAIT
                         }

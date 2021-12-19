@@ -20,6 +20,8 @@ public class GameHostActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     MatchgameMainFragment matchgameMainFragment;
+    PureLuckFragment pureLuckFragment;
+    QuizBowlFragment quizBowlFragment;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -42,6 +44,8 @@ public class GameHostActivity extends AppCompatActivity {
 
         // Open bundle for Game extra to open
         matchgameMainFragment = new MatchgameMainFragment();
+        pureLuckFragment = new PureLuckFragment();
+        quizBowlFragment = new  QuizBowlFragment();
     }
 
     //    @Override
@@ -56,7 +60,7 @@ public class GameHostActivity extends AppCompatActivity {
 
         if (game_name.toLowerCase().equals("matchmaker")){
             transaction.replace(R.id.game_host_fragment,matchgameMainFragment,"home_game_fragment");
-            transaction.addToBackStack("home_game_fragment");
+            transaction.addToBackStack(null);
             transaction.commit();
 
         } else if (game_name.toLowerCase().equals("pureluck")){

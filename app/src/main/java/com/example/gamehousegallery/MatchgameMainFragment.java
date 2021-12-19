@@ -1,8 +1,10 @@
 package com.example.gamehousegallery;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -11,11 +13,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 public class MatchgameMainFragment extends Fragment {
 
     MatchgamePlayFragment matchgamePlayFragment;
+    ImageView game_image;
     Button easyButton;
     Button medButton;
     Button hardButton;
@@ -39,6 +49,24 @@ public class MatchgameMainFragment extends Fragment {
 
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_matchgame_main, container, false);
+        game_image = rootView.findViewById(R.id.game_image);
+
+        StorageReference pathReference = FirebaseStorage.getInstance().getReference("images/matchmaker.JPG");
+        pathReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Picasso.get().load(uri).into(game_image);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(rootView.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                // Have picasso load in a default image
+                // Picasso.get().load(uri).into(game_image_imageview);
+            }
+        });
+
         easyButton = rootView.findViewById(R.id.easyButton);
         medButton= rootView.findViewById(R.id.medButton);
         hardButton= rootView.findViewById(R.id.hardButton);
@@ -99,4 +127,5 @@ public class MatchgameMainFragment extends Fragment {
 //        intent.putExtra("column", 3);
 //        startActivity(intent);
     }
+
 }

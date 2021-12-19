@@ -143,6 +143,8 @@ public class WinFragment extends Fragment {
         // Win Chime
         final MediaPlayer mp = MediaPlayer.create(getContext(), R.raw.fireworks1);
         mp.start();
+        mp.start();
+        mp.release();
 
         return rootView;
     }

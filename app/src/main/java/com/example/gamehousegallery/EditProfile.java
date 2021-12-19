@@ -21,6 +21,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import android.provider.MediaStore;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -221,6 +222,36 @@ public class EditProfile extends AppCompatActivity implements PopupMenu.OnMenuIt
             takePhoto();
         }
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.homebar_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.signout:
+                mAuth.signOut();
+                finish();
+                return true;
+            case R.id.search_action:
+
+                // IMPLEMENT FILETERING
+                return true;
+            case R.id.editProfile:
+                startActivity(new Intent(this, EditProfile.class));
+                return true;
+
+            case R.id.homeOption:
+                startActivity(new Intent(this, HomeActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {

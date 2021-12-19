@@ -79,7 +79,7 @@ public class HomeActivity extends AppCompatActivity {
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 
         transaction.replace(R.id.nav_host_fragment_home,homeGameFragment,"home_game_fragment");
-        transaction.addToBackStack(null);
+        transaction.addToBackStack("home_game_fragment");
         transaction.commit();
 
     }

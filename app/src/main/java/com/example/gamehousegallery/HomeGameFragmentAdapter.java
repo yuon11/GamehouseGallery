@@ -25,18 +25,11 @@ public class HomeGameFragmentAdapter extends FragmentStateAdapter {
         this.key_to_Post=key_to_Post;
     }
 
-
     @NonNull
     @Override
     public Fragment createFragment(int i) {
         Fragment fragment = new GameDetailFragment();
         Bundle args = new Bundle();
-
-        //key_to_Post.get(game_list.get(i));
-//
-//        Log.d("GameDetailFragment", "Checking isue start" + key_to_Post.toString());
-//        Log.d("GameDetailFragment2", "Checking isue start" + key_to_Post.get(game_list.get(i)).game_name
-//        + key_to_Post.get(game_list.get(i)).game_image + key_to_Post.get(game_list.get(i)).description);
 
         args.putString("game_name", key_to_Post.get(game_list.get(i)).game_name);
         args.putString("game_image", key_to_Post.get(game_list.get(i)).game_image);
