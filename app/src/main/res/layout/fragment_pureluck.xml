@@ -1,59 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:tools="http://schemas.android.com/tools"
-android:id="@+id/activity_main"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-tools:context=".PureLuckFragment">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PureLuckFragment">
 
-<ImageView
-android:id="@+id/coin"
-android:layout_width="200dp"
-android:layout_height="200dp"
-android:src="@drawable/heads"
-android:layout_centerHorizontal="true"
-android:layout_marginTop="40dp"/>
-
-<Button
-android:id="@+id/btn"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:layout_below="@id/coin"
-android:layout_centerHorizontal="true"
-android:layout_marginTop="60dp"
-android:text="Flip"/>
-
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60dp" />
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_marginTop="350dp"
-    android:weightSum="2">
+    android:weightSum="3">
     <Button
-        android:id="@+id/heads"
+        android:id="@+id/btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="50dp"
-        android:layout_marginLeft="50dp"
-        android:text="Heads"
-        android:layout_weight="1"/>
-    <Button
-        android:id="@+id/tails"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="50dp"
-        android:layout_marginLeft="50dp"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:layout_weight="1"
-        android:text="Tails"/>
-</LinearLayout>
+        android:text="Flip"/>
 
-<Button
-android:id="@+id/lng_flp_btn"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:layout_below="@id/coin"
-android:layout_centerHorizontal="true"
-android:layout_marginTop="160dp"
-android:text="Long Flip"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:weightSum="2"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/heads"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:text="Heads"
+            android:layout_weight="1"/>
+        <Button
+            android:id="@+id/tails"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_weight="1"
+            android:text="Tails"/>
+    </LinearLayout>
 
+    <Button
+        android:id="@+id/toss_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:text="Toss"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/info_textview_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="top"
+        android:weightSum="3">
+        <TextView
+            android:id="@+id/toss_cnt_textview"
+            android:layout_width="80dp"
+            android:layout_height="60dp"
+            android:text="Toss Count"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:layout_weight="1"
+            />
+        <TextView
+            android:id="@+id/score_textview"
+            android:layout_width="80dp"
+            android:layout_height="60dp"
+            android:text="Correct/TotalGuess"
+            android:textAlignment="center"
+            android:layout_weight="1"
+            />
+        <TextView
+            android:id="@+id/difficulty_textview"
+            android:layout_width="80dp"
+            android:layout_height="60dp"
+            android:text="Total Guesses"
+            android:textAlignment="center"
+            android:layout_weight="1"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/option_btn_layouts"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp"
+        android:weightSum="3">
+        <Button
+            android:id="@+id/log_score_btn"
+            android:layout_width="50dp"
+            android:layout_height="100dp"
+            android:layout_gravity="bottom"
+            android:text="Log Score"
+            android:layout_weight="1"/>
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="bottom"/>
+        <Button
+            android:id="@+id/clear_btn"
+            android:layout_width="50dp"
+            android:layout_height="100dp"
+            android:layout_gravity="bottom"
+            android:text="Clear"
+            android:layout_weight="1"/>
+    </LinearLayout>
 </RelativeLayout>

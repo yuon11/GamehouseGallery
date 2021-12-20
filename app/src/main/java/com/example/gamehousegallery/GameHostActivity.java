@@ -62,27 +62,23 @@ public class GameHostActivity extends AppCompatActivity {
 
         if (game_name.toLowerCase().equals("matchmaker")){
             transaction.replace(R.id.game_host_fragment,matchgameMainFragment,"matchmaker_fragment");
-            transaction.addToBackStack(null);
             transaction.commit();
 
         } else if (game_name.toLowerCase().equals("pureluck")){
             Toast.makeText(getApplicationContext(), "Opening Game " + game_name, Toast.LENGTH_SHORT).show();
             transaction.replace(R.id.game_host_fragment,pureLuckFragment,"pureluck_fragment");
-            transaction.addToBackStack(null);
             transaction.commit();
 
         } else if (game_name.toLowerCase().equals("quizbowl!"))
         {
             Toast.makeText(getApplicationContext(), "Opening Game " + game_name, Toast.LENGTH_SHORT).show();
             transaction.replace(R.id.game_host_fragment,quizBowlFragment,"quizbowl!_fragment");
-            transaction.addToBackStack(null);
             transaction.commit();
         }else
             {
             Toast.makeText(getApplicationContext(), "No Implementation Found For " + game_name, Toast.LENGTH_SHORT).show();
             Toast.makeText(getApplicationContext(), "RETURNING HOME", Toast.LENGTH_SHORT).show();
             transaction.replace(R.id.game_host_fragment,homeGameFragment,"home_game_fragment");
-            transaction.addToBackStack(null);
             transaction.commit();
         }
     }
