@@ -4,7 +4,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -30,14 +29,14 @@ public class HomeHighScoreRecyclerAdapter extends RecyclerView.Adapter<HomeHighS
     private FirebaseUser currentUser;
     private RecyclerView r;
     private List<String> score_to_post;
-    final private HashMap<String, UserGameData> highscores_to_Post;
-    private HashMap<String, UserGameData> filtered_highscores_to_Post;
+    final private HashMap<String, UserGameDataModel> highscores_to_Post;
+    private HashMap<String, UserGameDataModel> filtered_highscores_to_Post;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference allHighScoresRef = database.getReference("HighScores");
     SimpleDateFormat localDateFormat= new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
-    public HomeHighScoreRecyclerAdapter(RecyclerView fa, HashMap<String, UserGameData> highscores_to_Post, List<String> highscores_to_post_key_list) {
+    public HomeHighScoreRecyclerAdapter(RecyclerView fa, HashMap<String, UserGameDataModel> highscores_to_Post, List<String> highscores_to_post_key_list) {
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
@@ -63,7 +62,7 @@ public class HomeHighScoreRecyclerAdapter extends RecyclerView.Adapter<HomeHighS
         Log.d("onBindView","KEYSET  - " + highscores_to_Post.keySet());
         Log.d("onBindView","VALUES  - " + highscores_to_Post.get(score_to_post.get(position)));
 
-        final UserGameData u =highscores_to_Post.get(score_to_post.get(position));
+        final UserGameDataModel u =highscores_to_Post.get(score_to_post.get(position));
         final String uid = u.gamedata_uid;
 
         Log.d("onBindView","VALUES  - " + u);

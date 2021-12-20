@@ -1,7 +1,5 @@
 package com.example.gamehousegallery;
 
-import android.util.Log;
-
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.HashMap;
@@ -13,9 +11,9 @@ public class HighScoresDataModel {
 
     public HashMap<String,DatabaseReference> game_name_to_highscore_gamedata;
 
-    public HashMap<String,UserGameData> matchmaker_highscore_data;
-    public HashMap<String,UserGameData> pureluck_highscore_data;
-    public HashMap<String,UserGameData> quizbowl_highscore_data;
+    public HashMap<String, UserGameDataModel> matchmaker_highscore_data;
+    public HashMap<String, UserGameDataModel> pureluck_highscore_data;
+    public HashMap<String, UserGameDataModel> quizbowl_highscore_data;
 
     public HighScoresDataModel(String highscore_data_uid, String user_uid){
 
@@ -29,7 +27,7 @@ public class HighScoresDataModel {
 
     }
 
-    public void setGameScoreData(String game_name, HashMap<String, UserGameData> dataInstance){
+    public void setGameScoreData(String game_name, HashMap<String, UserGameDataModel> dataInstance){
         if (game_name.toLowerCase().equals("matchmaker")){
             matchmaker_highscore_data=dataInstance;
         }
@@ -41,7 +39,7 @@ public class HighScoresDataModel {
         }
     }
 
-    public void addGameScoreData(String game_name, UserGameData dataInstance){
+    public void addGameScoreData(String game_name, UserGameDataModel dataInstance){
 
         if (game_name.toLowerCase().equals("matchmaker")){
             matchmaker_highscore_data.put(dataInstance.gamedata_uid, dataInstance);
@@ -55,7 +53,7 @@ public class HighScoresDataModel {
 
     }
 
-    public HashMap<String,UserGameData> getGameScoreData(String game_name){
+    public HashMap<String, UserGameDataModel> getGameScoreData(String game_name){
 
         if (game_name.toLowerCase().equals("matchmaker")){
             return matchmaker_highscore_data;
@@ -67,7 +65,7 @@ public class HighScoresDataModel {
             return quizbowl_highscore_data;
         }
         else {
-            HashMap<String,UserGameData> emptyResult = new HashMap<>();
+            HashMap<String, UserGameDataModel> emptyResult = new HashMap<>();
             return emptyResult;
         }
     }

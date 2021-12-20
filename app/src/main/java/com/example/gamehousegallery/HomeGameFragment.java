@@ -10,13 +10,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
@@ -292,7 +290,7 @@ public class HomeGameFragment extends Fragment {
                         if (!score_keys_post_list.contains(dataSnapshot.getKey())){
                             score_keys_post_list.add(dataSnapshot.getKey());
                             highScoresDataModel.game_name_to_highscore_gamedata.put(dataSnapshot.getKey(), dataSnapshot.getRef());
-                            UserGameData newData = new UserGameData(
+                            UserGameDataModel newData = new UserGameDataModel(
                                     dataSnapshot.getKey(),
                                     viewPagerGame,
                                     dataSnapshot.child("score").getValue().toString(),
@@ -316,7 +314,7 @@ public class HomeGameFragment extends Fragment {
                             Log.d("onChildChanged", "scorelist size - " + score_keys_post_list.size());
                             if(score_keys_post_list.get(i).equals(snapshot.getKey()))
                             {
-                                UserGameData newData = new UserGameData(
+                                UserGameDataModel newData = new UserGameDataModel(
                                         snapshot.getKey(),
                                         viewPagerGame,
                                         snapshot.child("score").getValue().toString(),

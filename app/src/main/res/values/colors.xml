@@ -21,4 +21,8 @@
     <color name="maroon">#800000</color>
     <color name="bright_red">#f70003</color>
     <color name="red">#a00000</color>
+    <color name="bronze">#9c5221</color>
+    <color name="silver">#b5b5bd</color>
+    <color name="gold">#cccc33</color>
+    <color name="platinum">#b8b7b2</color>
 </resources>

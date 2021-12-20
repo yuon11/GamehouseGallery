@@ -131,14 +131,13 @@ public class WinFragment extends Fragment {
                 Toast.makeText(getContext(),"Score Updated", Toast.LENGTH_SHORT).show();
                 // Clear space after sending text
             }
-        })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getContext(), e.getMessage(),
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getContext(), e.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
 
         // Win Chime
         final MediaPlayer mp = MediaPlayer.create(getContext(), R.raw.fireworks1);

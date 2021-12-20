@@ -304,7 +304,6 @@ public class MatchgamePlayFragment extends Fragment {
             winFragment.setArguments(args);
 
             transaction.replace(R.id.game_host_fragment,winFragment,"matchgame_play_fragment");
-            transaction.addToBackStack(null);
             transaction.commit();
         }
     }
