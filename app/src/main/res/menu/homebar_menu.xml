@@ -10,20 +10,29 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView"/>
     <item
         android:icon="@drawable/profile_icon"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always|collapseActionView"
         android:id="@+id/editProfile"
         android:title="Edit Profile">
     </item>
     <item
         android:icon="@drawable/exit_icon"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always|collapseActionView"
         android:id="@+id/signout"
         android:title="Sign Out">
     </item>
     <item
-        android:icon="@drawable/exit_icon"
         app:showAsAction="withText"
         android:id="@+id/homeOption"
         android:title="Home">
+    </item>
+    <item
+        app:showAsAction="withText"
+        android:id="@+id/highscoresOption"
+        android:title="HighScores">
+    </item>
+    <item
+        app:showAsAction="withText"
+        android:id="@+id/gamesOption"
+        android:title="Games">
     </item>
 </menu>

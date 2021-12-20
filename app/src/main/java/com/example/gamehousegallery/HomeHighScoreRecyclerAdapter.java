@@ -56,11 +56,7 @@ public class HomeHighScoreRecyclerAdapter extends RecyclerView.Adapter<HomeHighS
 
     @Override
     public void onBindViewHolder(@NonNull HomeHighScoreRecyclerAdapter.ViewHolder holder, int position) {
-//        try
-//        {
 
-//        final u =md_filtered.get(keyList.get(position));
-//        final String uid=u.uid;
 
         Log.d("onBindView","POSITION - " + score_to_post.toString() + " SIZE " + score_to_post.size());
         Log.d("onBindView","SIZE OF LIST  - " + highscores_to_Post.size());
@@ -73,36 +69,30 @@ public class HomeHighScoreRecyclerAdapter extends RecyclerView.Adapter<HomeHighS
         Log.d("onBindView","VALUES  - " + u);
 
 
-            // final String uid=u.gamedata_uid;
-            if(holder.ref!=null && holder.refListener!=null)
-            {
-                holder.ref.removeEventListener(holder.refListener);
+        // final String uid=u.gamedata_uid;
+        if(holder.ref!=null && holder.refListener!=null)
+        {
+            holder.ref.removeEventListener(holder.refListener);
+        }
+
+        holder.ref = allHighScoresRef.child(currentUser.getUid()).child(u.game_name).child(uid).getRef();
+        holder.ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+
+                    holder.entryKey=dataSnapshot.getKey();
+                    holder.rank.setText(dataSnapshot.child("score_rank").getValue().toString());
+                    holder.score.setText(dataSnapshot.child("score").getValue().toString());
+                    holder.date_of_score.setText(localDateFormat.format(new Date(Long.parseLong(dataSnapshot.child("date_of_score").getValue().toString()))));
+                    holder.difficulty.setText(dataSnapshot.child("difficulty").getValue().toString());
+                }
             }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-//            holder.entryKey= u.gamedata_uid;
-//            holder.rank.setText(u.score_rank);
-//            holder.score.setText(u.score);
-//            holder.date_of_score.setText(u.date_of_score);
-//            holder.difficulty.setText(u.difficulty);
-
-            holder.ref = allHighScoresRef.child(currentUser.getUid()).child(u.game_name).child(uid).getRef();
-            holder.ref.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists()){
-
-                        holder.entryKey=dataSnapshot.getKey();
-                        holder.rank.setText(dataSnapshot.child("score_rank").getValue().toString());
-                        holder.score.setText(dataSnapshot.child("score").getValue().toString());
-                        holder.date_of_score.setText(localDateFormat.format(new Date(Long.parseLong(dataSnapshot.child("date_of_score").getValue().toString()))));
-                        holder.difficulty.setText(dataSnapshot.child("difficulty").getValue().toString());
-                    }
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
+            }
+        });
 //
 //        } catch (Exception e) {
 //            // p did not contain a valid double

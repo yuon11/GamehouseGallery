@@ -288,30 +288,32 @@ public class HomeGameFragment extends Fragment {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String previousChildName) {
 
-                        Log.d("onChildAdded", "Datasnapshot - " + dataSnapshot.toString());
+                        // Log.d("onChildAdded", "Datasnapshot - " + dataSnapshot.toString());
+                        if (!score_keys_post_list.contains(dataSnapshot.getKey())){
+                            score_keys_post_list.add(dataSnapshot.getKey());
+                            highScoresDataModel.game_name_to_highscore_gamedata.put(dataSnapshot.getKey(), dataSnapshot.getRef());
+                            UserGameData newData = new UserGameData(
+                                    dataSnapshot.getKey(),
+                                    viewPagerGame,
+                                    dataSnapshot.child("score").getValue().toString(),
+                                    dataSnapshot.child("difficulty").getValue().toString(),
+                                    localDateFormat.format(new Date(Long.parseLong(dataSnapshot.child("date_of_score").getValue().toString()))),
+                                    dataSnapshot.child("score_rank").getValue().toString()
+                            );
 
-                        highScoresDataModel.game_name_to_highscore_gamedata.put(dataSnapshot.getKey(), dataSnapshot.getRef());
-                        UserGameData newData = new UserGameData(
-                                dataSnapshot.getKey(),
-                                viewPagerGame,
-                                dataSnapshot.child("score").getValue().toString(),
-                                dataSnapshot.child("difficulty").getValue().toString(),
-                                localDateFormat.format(new Date(Long.parseLong(dataSnapshot.child("date_of_score").getValue().toString()))),
-                                dataSnapshot.child("score_rank").getValue().toString()
-                        );
 
-                        score_keys_post_list.add(dataSnapshot.getKey());
-                        highScoresDataModel.addGameScoreData(viewPagerGame, newData);
-                        // highscores_to_Post.put(dataSnapshot.getKey(),highScoresDataModel);
-                        highScoreRecyclerFragmentAdapter.notifyDataSetChanged();
-                        highScoreRecyclerFragmentAdapter.notifyItemInserted(score_keys_post_list.size()-1);
+                            highScoresDataModel.addGameScoreData(viewPagerGame, newData);
+                            //highScoreRecyclerFragmentAdapter.notifyDataSetChanged();
+                            highScoreRecyclerFragmentAdapter.notifyItemInserted(score_keys_post_list.size());
+                        }
                     }
 
                     @Override
                     public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                        highScoresDataModel.game_name_to_highscore_gamedata.put(snapshot.getKey(), snapshot.getRef());
+//                        highScoresDataModel.game_name_to_highscore_gamedata.put(snapshot.getKey(), snapshot.getRef());
                         // highscores_to_Post.put(snapshot.getKey(),highScoresDataModel);
                         for (int i = 0; i < score_keys_post_list.size(); i++) {
+                            Log.d("onChildChanged", "scorelist size - " + score_keys_post_list.size());
                             if(score_keys_post_list.get(i).equals(snapshot.getKey()))
                             {
                                 UserGameData newData = new UserGameData(
@@ -324,7 +326,6 @@ public class HomeGameFragment extends Fragment {
                                 );
 
                                 highScoresDataModel.addGameScoreData(viewPagerGame,newData);
-                                score_keys_post_list.set(i, score_keys_post_list.get(i));
                                 highScoreRecyclerFragmentAdapter.notifyItemChanged(i);
                                 break;
                             }
@@ -334,11 +335,8 @@ public class HomeGameFragment extends Fragment {
 
                     @Override
                     public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-                        highScoreRecyclerFragmentAdapter.notifyDataSetChanged();
-
-                        for (int i = 0; i < game_list.size(); i++) {
-                            if(game_list.get(i).equals(snapshot.getKey()))
+                        for (int i = 0; i < score_keys_post_list.size(); i++) {
+                            if(score_keys_post_list.get(i).equals(snapshot.getKey()))
                             {
                                 highScoresDataModel.game_name_to_highscore_gamedata.remove(snapshot.getKey());
                                 score_keys_post_list.remove(i);

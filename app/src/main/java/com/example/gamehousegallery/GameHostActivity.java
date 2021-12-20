@@ -22,6 +22,7 @@ public class GameHostActivity extends AppCompatActivity {
     MatchgameMainFragment matchgameMainFragment;
     PureLuckFragment pureLuckFragment;
     QuizBowlFragment quizBowlFragment;
+    HomeGameFragment homeGameFragment;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -46,6 +47,7 @@ public class GameHostActivity extends AppCompatActivity {
         matchgameMainFragment = new MatchgameMainFragment();
         pureLuckFragment = new PureLuckFragment();
         quizBowlFragment = new  QuizBowlFragment();
+        homeGameFragment = new HomeGameFragment();
     }
 
     //    @Override
@@ -59,17 +61,29 @@ public class GameHostActivity extends AppCompatActivity {
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 
         if (game_name.toLowerCase().equals("matchmaker")){
-            transaction.replace(R.id.game_host_fragment,matchgameMainFragment,"home_game_fragment");
+            transaction.replace(R.id.game_host_fragment,matchgameMainFragment,"matchmaker_fragment");
             transaction.addToBackStack(null);
             transaction.commit();
 
         } else if (game_name.toLowerCase().equals("pureluck")){
-            Toast.makeText(getParent(), "Opening Game " + game_name, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Opening Game " + game_name, Toast.LENGTH_SHORT).show();
+            transaction.replace(R.id.game_host_fragment,pureLuckFragment,"pureluck_fragment");
+            transaction.addToBackStack(null);
+            transaction.commit();
 
-        } else if (game_name.toLowerCase().equals("quizbowl!")){
-            Toast.makeText(getParent(), "Opening Game " + game_name, Toast.LENGTH_SHORT).show();
-        }else{
-            Toast.makeText(getParent(), "No Implementation Found For " + game_name, Toast.LENGTH_SHORT).show();
+        } else if (game_name.toLowerCase().equals("quizbowl!"))
+        {
+            Toast.makeText(getApplicationContext(), "Opening Game " + game_name, Toast.LENGTH_SHORT).show();
+            transaction.replace(R.id.game_host_fragment,quizBowlFragment,"quizbowl!_fragment");
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }else
+            {
+            Toast.makeText(getApplicationContext(), "No Implementation Found For " + game_name, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "RETURNING HOME", Toast.LENGTH_SHORT).show();
+            transaction.replace(R.id.game_host_fragment,homeGameFragment,"home_game_fragment");
+            transaction.addToBackStack(null);
+            transaction.commit();
         }
     }
 

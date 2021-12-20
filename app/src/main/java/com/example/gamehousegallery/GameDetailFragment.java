@@ -2,17 +2,24 @@ package com.example.gamehousegallery;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import android.text.method.ScrollingMovementMethod;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -75,13 +82,48 @@ public class GameDetailFragment extends Fragment {
         gameDetailLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                PopupMenu popup = new PopupMenu(v.getContext(), v, Gravity.RIGHT);
+                MenuInflater inflater = popup.getMenuInflater();
+                inflater.inflate(R.menu.game_item_menu, popup.getMenu());
+                popup.show();
 
-                Intent intent=new Intent(v.getContext(),GameHostActivity.class);
-                intent.putExtra("game_name",args.getString("game_name"));
-                v.getContext().startActivity(intent);
+//                View popupView = inflater.inflate(R.menu.game_item_popup, null);
+//                PopupWindow popupWindow = new PopupWindow(v.getContext());
+//                popupWindow.showAsDropDown(v);
+
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.play_clicked_game:
+                                Intent intent=new Intent(v.getContext(),GameHostActivity.class);
+                                intent.putExtra("game_name",args.getString("game_name"));
+                                v.getContext().startActivity(intent);
+                                return true;
+
+                            case R.id.game_details:
+                                Toast.makeText(v.getContext(), "Game Details",Toast.LENGTH_SHORT).show();
+//                                Intent intent= new Intent(v.getContext(), PhotoPreview.class);
+//                                intent.putExtra("key",u.postKey);
+//                                intent.putExtra("uri",u.url);
+//                                v.getContext().startActivity(intent);
+                                return true;
+                            case R.id.highscoresOption:
+                                Toast.makeText(v.getContext(), "HighScores",Toast.LENGTH_SHORT).show();
+//                                Intent intent= new Intent(v.getContext(), PhotoPreview.class);
+//                                intent.putExtra("key",u.postKey);
+//                                intent.putExtra("uri",u.url);
+//                                v.getContext().startActivity(intent);
+                                return true;
+                            default:
+                                return false;
+                        }
+                    }
+                });
+
             }
-        });
 
+        });
         return rootView;
     }
 }
