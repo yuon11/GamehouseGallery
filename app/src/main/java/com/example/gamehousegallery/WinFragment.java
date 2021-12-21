@@ -71,7 +71,6 @@ public class WinFragment extends Fragment {
         win_imageview = rootView.findViewById(R.id.win_imageview);
         final int random = new Random().nextInt(3)+1; // [0, 60] + 20 => [20, 80]
         StorageReference pathReference = FirebaseStorage.getInstance().getReference("images/"+"you_win"+ random +".JPG");
-
         pathReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {

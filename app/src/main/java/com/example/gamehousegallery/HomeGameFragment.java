@@ -1,5 +1,6 @@
 package com.example.gamehousegallery;
 
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,9 +16,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,12 +32,16 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -110,7 +119,7 @@ public class HomeGameFragment extends Fragment {
     TabLayout tabLayout;
     RecyclerView highscoreRecyclerView;
     TextView gridTextView;
-//    LinearLayout mainLinearLayout;
+    ImageView background_imageview;
 
     Button toggleHSBoard;
     String hsBoardSetting="USER";//GLOBAL
@@ -161,14 +170,11 @@ public class HomeGameFragment extends Fragment {
         key_to_Post = new HashMap<>();
         score_keys_post_list = new ArrayList<>();
 
-
-        viewPagerGame="matchmaker";
-        setHsBanner();
     }
 
     public void setHsBanner(){
-        hsBanner="YOUR "+viewPagerGame+ " HIGHSCORE BOARD";
-        if (currentUser.getDisplayName()!=null ||!currentUser.getDisplayName().equals(""))
+        hsBanner="YOUR "+viewPagerGame.toUpperCase()+ " HIGHSCORE BOARD";
+        if (currentUser.getDisplayName()!=null || currentUser.getDisplayName().equals("") || currentUser.getDisplayName().isEmpty())
             hsBanner=currentUser.getDisplayName()+"'s "+viewPagerGame+ " HIGHSCORE BOARD";
         if (gridTextView!=null)
             gridTextView.setText(hsBanner);
@@ -180,10 +186,30 @@ public class HomeGameFragment extends Fragment {
         super.onCreate(savedInstanceState);
         View rootView = inflater.inflate(R.layout.fragment_home_game, container, false);
 
+
         highscoreRecyclerView = (RecyclerView) rootView.findViewById(R.id.score_recycler_view);
         mViewPager = (ViewPager2) rootView.findViewById(R.id.pager);
         tabLayout = (TabLayout) rootView.findViewById(R.id.game_tabs);
         gridTextView = (TextView) rootView.findViewById(R.id.grid_name);
+
+        background_imageview = (ImageView) rootView.findViewById(R.id.background_imageview);
+        background_imageview.setAlpha(0.4f);
+        background_imageview.setScaleType(ImageView.ScaleType.FIT_XY);
+
+        final int random = new Random().nextInt(3)+1; // [0, 60] + 20 => [20, 80]
+        StorageReference pathReference = FirebaseStorage.getInstance().getReference("images/"+"home_activity_background"+ random +".JPG");
+        pathReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+//                Picasso.get().load(uri).transform(new CircleTransform()).into(quiz_backgrd_imgview);
+                Picasso.get().load(uri).into(background_imageview);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
         LinearLayoutManager layoutManager=new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -197,13 +223,6 @@ public class HomeGameFragment extends Fragment {
         highScoreRecyclerFragmentAdapter = new HomeHighScoreRecyclerAdapter(highscoreRecyclerView, score_keys_post_list, viewPagerGame);
         highscoreRecyclerView.setAdapter(highScoreRecyclerFragmentAdapter);
 
-        String hs_banner = currentUser.getDisplayName().toUpperCase()+"'s "+viewPagerGame+ " HIGHSCORE BOARD";
-        gridTextView.setText(hs_banner);
-        // mainLinearLayout = (LinearLayout) rootView.findViewById(R.id.main_home_game_layout);
-
-
-
-        // descriptionText.setMovementMethod(new ScrollingMovementMethod());
         // background thread for view pager adapting and animation
         backgroundThread(rootView);
 

@@ -1,5 +1,6 @@
 package com.example.gamehousegallery;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -12,6 +13,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,6 +26,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.util.Random;
 
@@ -39,6 +45,7 @@ public class PureLuckFragment extends Fragment {
     private TextView toss_cnt_txtview;
     private TextView score_txtview;
     private TextView difficulty_txtview;
+    private ImageView backgroundImageView;
 
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
@@ -172,6 +179,7 @@ public class PureLuckFragment extends Fragment {
         score_txtview = (TextView) rootview.findViewById(R.id.score_textview);
         difficulty_txtview = (TextView) rootview.findViewById(R.id.difficulty_textview);
 
+
         btn = (Button) rootview.findViewById(R.id.btn);
         toss_btn = (Button) rootview.findViewById(R.id.toss_btn);
         heads_btn= (Button) rootview.findViewById(R.id.heads);
@@ -179,6 +187,25 @@ public class PureLuckFragment extends Fragment {
         log_score_btn= (Button) rootview.findViewById(R.id.log_score_btn);
         clear_btn= (Button) rootview.findViewById(R.id.clear_btn);
 
+        backgroundImageView = (ImageView) rootview.findViewById(R.id.background_imageview);
+
+        final int random = new Random().nextInt(3)+1; // [0, 60] + 20 => [20, 80]
+        StorageReference pathReference = FirebaseStorage.getInstance().getReference("images/"+"home_activity_background"+ random +".JPG");
+        pathReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+//                        Picasso.get().load(uri).transform(new CircleTransform()).into(logoImageView);
+                Picasso.get().load(uri).into(backgroundImageView);
+                scaleView(backgroundImageView, .1f,1);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getContext(), "No Background Image Loaded "+e.getMessage(), Toast.LENGTH_SHORT).show();
+//                backgroundImageView.setImageResource();
+//                scaleView(backgroundImageView, .1f,1);
+            }
+        });
         resetScoreData();
         resetGameUI();
 
@@ -287,6 +314,17 @@ public class PureLuckFragment extends Fragment {
             }
         });
         return rootview;
+    }
+
+    public void scaleView(View v, float startScale, float endScale) {
+        Animation anim = new ScaleAnimation(
+                1f, 1f, // Start and end values for the X axis scaling
+                startScale, endScale, // Start and end values for the Y axis scaling
+                Animation.RELATIVE_TO_SELF, 1f, // Pivot point of X scaling
+                Animation.RELATIVE_TO_SELF, 1f); // Pivot point of Y scaling
+        anim.setFillAfter(true); // Needed to keep the result of the animation
+        anim.setDuration(2000);
+        v.startAnimation(anim);
     }
 
     public void logScoreData()
@@ -431,12 +469,7 @@ public class PureLuckFragment extends Fragment {
         crrct_guess_cnt=crrct_tails_guess_cnt +crrct_heads_guess_cnt;
         current_guess="";
         try {
-
             float luck =(float) crrct_guess_cnt/guess_cnt;
-            Log.d("CalcLuck-","Luck - " + percentage);
-            Log.d("CalcLuck-","Luck - " + crrct_guess_cnt);
-            Log.d("CalcLuck-","Luck - " + guess_cnt);
-
             if (!Double.isNaN(luck)) {
                 percentage = luck * (float) 100.0;
             }

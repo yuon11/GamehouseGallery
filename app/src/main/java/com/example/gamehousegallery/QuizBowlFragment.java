@@ -30,6 +30,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -43,15 +45,23 @@ public class QuizBowlFragment extends Fragment {
     TextView equation_right;
     LinearLayout lin_layout;
     ImageView quiz_backgrd_imgview;
+    List<String> current_equation;
+
+    String difficulty="beginner";
+
+    List<String> arithmertic_operations; //= {" + "," - "," x "," / "};
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        arithmertic_operations = new ArrayList<String>();
+        arithmertic_operations.add("+");
+        arithmertic_operations.add("-");
+        arithmertic_operations.add("x");
+        arithmertic_operations.add("/");
 //        mp = MediaPlayer.create(getBaseContext(), R.raw.victory_trumpet);
 //        mp.start();
 //        mp.release();
-
     }
 
     @Override
@@ -66,12 +76,13 @@ public class QuizBowlFragment extends Fragment {
         equation_left=(TextView) rootView.findViewById(R.id.equation_left);
         equation_op=(TextView)rootView.findViewById(R.id.equation_operator);
         equation_right=(TextView)rootView.findViewById(R.id.equation_right);
+
         StorageReference pathReference = FirebaseStorage.getInstance().getReference(getString(R.string.quizbowl_background));
         pathReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-//                Picasso.get().load(uri).transform(new CircleTransform()).into(quiz_backgrd_imgview);
                 Picasso.get().load(uri).into(quiz_backgrd_imgview);
+                quiz_backgrd_imgview.setScaleType(ImageView.ScaleType.FIT_XY);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -84,6 +95,43 @@ public class QuizBowlFragment extends Fragment {
         return rootView;
     }
 
+    private String pickOp(){
+        Random randomGenerator = new Random();
+        int randIndex = randomGenerator.nextInt(arithmertic_operations.size());
+        return arithmertic_operations.get(randIndex);
+    }
+    public void generateQuestion(){
+
+        current_equation.clear();
+        ArrayList<String> generated_question = new ArrayList<>();
+//        array<std::string, 4> arithmertic_operations = {" + "," - "," x "," / "};
+        Random randomGenerator = new Random();
+
+        int randomLeftInt = randomGenerator.nextInt(100);
+        generated_question.add(Double.toString(randomLeftInt));
+
+        String operation = pickOp();
+        generated_question.add(operation);
+
+        int randomRightInt = randomGenerator.nextInt(100);
+        generated_question.add(Double.toString(randomLeftInt));
+        // equation_right.setText(randomRightInt);
+        // log("Generated : " + randomInt);
+
+        current_equation=generated_question;
+    }
+
+    public void setQuizUI(){
+//        lin_layout=(LinearLayout) findViewById(R.id.quiz_bowl_layout);
+//        quiz_backgrd_imgview=(ImageView) findViewById(R.id.quiz_bowl_imageview);
+//        equation_left=(TextView) findViewById(R.id.equation_left);
+//        equation_op=(TextView) findViewById(R.id.equation_operator);
+//        equation_right=(TextView) findViewById(R.id.equation_right);
+        equation_left.setText(current_equation.get(0));
+        equation_op.setText(current_equation.get(1));
+        equation_right.setText(current_equation.get(2));
+    }
+
     public void scaleView(View v, float startScale, float endScale) {
         Animation anim = new ScaleAnimation(
                 1f, 1f, // Start and end values for the X axis scaling
@@ -94,6 +142,7 @@ public class QuizBowlFragment extends Fragment {
         anim.setDuration(2000);
         v.startAnimation(anim);
     }
+
     private void strobeEffect(TextView thisView){
         // Set to mk
         new CountDownTimer(7000, 5) {
@@ -110,6 +159,7 @@ public class QuizBowlFragment extends Fragment {
             }
         }.start();
     }
+
     private void spinView(View thisView){
         thisView.animate();
         RotateAnimation rotate = new RotateAnimation(0, 1080, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -118,6 +168,7 @@ public class QuizBowlFragment extends Fragment {
 
         thisView.startAnimation(rotate);
     }
+
     private void fadeInView(View thisView){
         thisView.animate();
         Animation fadeIn = new AlphaAnimation(0, 1);

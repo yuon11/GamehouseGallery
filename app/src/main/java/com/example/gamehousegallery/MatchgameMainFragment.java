@@ -22,6 +22,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
+import java.util.Random;
+
 public class MatchgameMainFragment extends Fragment {
 
     MatchgamePlayFragment matchgamePlayFragment;
@@ -30,6 +32,7 @@ public class MatchgameMainFragment extends Fragment {
     Button medButton;
     Button hardButton;
     Button masterButton;
+    ImageView backgroundImageView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,6 +53,7 @@ public class MatchgameMainFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_matchgame_main, container, false);
         game_image = rootView.findViewById(R.id.game_image);
+        backgroundImageView = (ImageView) rootView.findViewById(R.id.background_imageview);
 
         StorageReference pathReference = FirebaseStorage.getInstance().getReference("images/matchmaker.JPG");
         pathReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -64,6 +68,24 @@ public class MatchgameMainFragment extends Fragment {
 
                 // Have picasso load in a default image
                 // Picasso.get().load(uri).into(game_image_imageview);
+            }
+        });
+
+
+        final int random = new Random().nextInt(3)+1; // [0, 60] + 20 => [20, 80]
+        pathReference = FirebaseStorage.getInstance().getReference("images/"+"highscore_background"+ random +".JPG");
+        pathReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+//                        Picasso.get().load(uri).transform(new CircleTransform()).into(logoImageView);
+                Picasso.get().load(uri).into(backgroundImageView);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getContext(), "No Background Image Loaded "+e.getMessage(), Toast.LENGTH_SHORT).show();
+//                backgroundImageView.setImageResource();
+//                scaleView(backgroundImageView, .1f,1);
             }
         });
 

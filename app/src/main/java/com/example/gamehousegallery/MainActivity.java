@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     MediaPlayer mp;
     ImageView logoImageView;
     TextView titleTextView;
+    ImageView backgroundImageView;
 
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
@@ -50,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
         currentUser = mAuth.getCurrentUser();
         logoImageView = (ImageView) findViewById(R.id.gameGallLogo);
         titleTextView = (TextView) findViewById(R.id.gameGallTitle);
+        backgroundImageView = (ImageView) findViewById(R.id.background_imageview);
+        backgroundImageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        backgroundImageView.setAlpha(0.4f);
 
         // Fade In, as test
         titleTextView.setText(getString(R.string.app_name));
@@ -62,11 +66,30 @@ public class MainActivity extends AppCompatActivity {
                 scaleView(titleTextView, .1f,1);
                 strobeEffect(titleTextView);
 
+                final int random = new Random().nextInt(3)+1; // [0, 60] + 20 => [20, 80]
+                StorageReference pathReference = FirebaseStorage.getInstance().getReference("images/"+"highscore_background"+ random +".JPG");
+                pathReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+//                        Picasso.get().load(uri).transform(new CircleTransform()).into(logoImageView);
+                        Picasso.get().load(uri).into(backgroundImageView);
+                        scaleView(backgroundImageView, .1f,1);
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                        backgroundImageView.setImageResource(R.drawable.not_signed_in);
+                    }
+                });
+
                 // Opening Game announced
                 mp = MediaPlayer.create(getBaseContext(), R.raw.gamehouse_gallery_start_tune);
                 mp.start();
                 // Get Title Logo w/ Picasso
-                StorageReference pathReference = FirebaseStorage.getInstance().getReference(getString(R.string.gamehouse_gallery_logo));
+
+                pathReference = FirebaseStorage.getInstance().getReference(getString(R.string.gamehouse_gallery_logo));
                 pathReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {

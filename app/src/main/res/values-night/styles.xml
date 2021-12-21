@@ -9,7 +9,7 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
     <style name="Theme.Splash" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:windowBackground">@color/splashBackground</item>
+        <item name="android:windowBackground">@color/silver</item>
         <item name="android:windowNoTitle">true</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowActivityTransitions">true</item>

@@ -94,9 +94,10 @@ public class GameDetailFragment extends Fragment {
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
+                        Intent intent;
                         switch (item.getItemId()) {
                             case R.id.play_clicked_game:
-                                Intent intent=new Intent(v.getContext(),GameHostActivity.class);
+                                intent=new Intent(v.getContext(),GameHostActivity.class);
                                 intent.putExtra("game_name",args.getString("game_name"));
                                 v.getContext().startActivity(intent);
                                 return true;
@@ -110,10 +111,9 @@ public class GameDetailFragment extends Fragment {
                                 return true;
                             case R.id.highscoresOption:
                                 Toast.makeText(v.getContext(), "HighScores",Toast.LENGTH_SHORT).show();
-//                                Intent intent= new Intent(v.getContext(), PhotoPreview.class);
-//                                intent.putExtra("key",u.postKey);
-//                                intent.putExtra("uri",u.url);
-//                                v.getContext().startActivity(intent);
+                                intent= new Intent(v.getContext(), HighScoreBoardActivity.class);
+                                intent.putExtra("game_name",args.getString("game_name"));
+                                v.getContext().startActivity(intent);
                                 return true;
                             default:
                                 return false;

@@ -5,6 +5,17 @@
     android:layout_height="match_parent"
     xmlns:weightSum="http://schemas.android.com/apk/res-auto"
     tools:context=".QuizBowlFragment">
+    <com.google.android.material.tabs.TabLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/game_tabs"
+        android:background="@color/light_tan"/>
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/banner"/>
     <ImageView
         android:id="@+id/quiz_bowl_imageview"
         android:layout_width="match_parent"

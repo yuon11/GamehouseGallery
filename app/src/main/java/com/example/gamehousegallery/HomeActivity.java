@@ -82,6 +82,17 @@ public class HomeActivity extends AppCompatActivity {
             case R.id.homeOption:
                 startActivity(new Intent(this, HomeActivity.class));
                 return true;
+            case R.id.gamesOption:
+                //startActivity(new Intent(this, EditProfile.class));
+                return true;
+
+            case R.id.highscoresOption:
+                Bundle args = new Bundle();
+                args.putString("game_name","pureluck");
+                Intent hsBoardIntent = new Intent(this, HighScoreBoardActivity.class);
+                hsBoardIntent.putExtra("game_name","matchmaker");
+                startActivity(hsBoardIntent);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

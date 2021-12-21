@@ -9,6 +9,11 @@
     android:paddingRight="30dp"
     tools:context=".EditProfile">
     <ImageView
+        android:alpha="0.4"
+        android:background="@color/light_tan"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    <ImageView
         android:id="@+id/profileImage"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

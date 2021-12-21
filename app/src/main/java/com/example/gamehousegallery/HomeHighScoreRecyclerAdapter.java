@@ -133,7 +133,13 @@ public class HomeHighScoreRecyclerAdapter extends RecyclerView.Adapter<HomeHighS
 //        return new Filter() {
 //
 //            @Override
-//            protected FilterResults performFiltering(CharSequence charSequence) {
+//            protected FilterResults performFiltering(CharSequence charSequence){
+//            final FirebaseDatabase database = FirebaseDatabase.getInstance();
+//                    holder.ref = database.getReference("HighScores")
+//                            .child(currentUser.getUid())
+//                            .child(game_name)
+//                            .child(score_to_post.get(position))
+//                            .getRef();
 //
 //                String charString = charSequence.toString();
 //                Log.d("GetFilter", "get filter, current string: " + charString);
@@ -143,31 +149,19 @@ public class HomeHighScoreRecyclerAdapter extends RecyclerView.Adapter<HomeHighS
 //                    Log.d("GetFilterif", "Fileredlist size - " + md_filtered.size() +" Full list size - "+key_to_Post.size());
 //
 //                } else {
-//                    HashMap<String, MovieDataModel> filteredList = new HashMap<>();
+//                    HashMap<String, GameDataModel> filteredGameList = new HashMap<>();
+//                    HashMap<String, UserGameDataModel> filteredScoresList = new HashMap<>();
+
+//                    for (UserGameDataModel movie : key_to_Post.values()) {
 //
-//                    for (MovieDataModel movie : key_to_Post.values()) {
-//
-//                        if (movie.name.toString().toLowerCase().contains(charString.toLowerCase())) {
-//                            filteredList.put(movie.uid, movie);
-//                        } else if (movie.description.toString().toLowerCase().contains(charString.toLowerCase())) {
-//                            filteredList.put(movie.uid, movie);
-//                        } else if (movie.year.toString().toLowerCase().contains(charString.toLowerCase())) {
-//                            filteredList.put(movie.uid, movie);
-//                        }
-//                        else if (movie.stars.toString().toLowerCase().contains(charString.toLowerCase())) {
-//                            filteredList.put(movie.uid, movie);
-//                        }
-//                        else if (movie.director.toString().toLowerCase().contains(charString.toLowerCase())) {
-//                            filteredList.put(movie.uid, movie);
-//                        }
-//                        else if (movie.length.toString().toLowerCase().contains(charString.toLowerCase())) {
-//                            filteredList.put(movie.uid, movie);
+//                        if ()
+//                        {
 //                        }
 //                        else {
 //                            try
 //                            {
-//                                if (Double.parseDouble(movie.rating) >= Double.parseDouble(charString)) {
-//                                    filteredList.put(movie.uid, movie);
+//                                if ()
+//                                {
 //                                }
 //                            } catch (NumberFormatException e) {
 //                                // p did not contain a valid double

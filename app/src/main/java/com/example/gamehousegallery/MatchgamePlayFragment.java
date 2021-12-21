@@ -1,8 +1,10 @@
 package com.example.gamehousegallery;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -21,6 +23,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +52,7 @@ public class MatchgamePlayFragment extends Fragment {
     private String difficulty;
     GridLayout gridLayout;
     TextView textView;
+    ImageView backgroundImageView;
 
     WinFragment winFragment;
 
@@ -78,6 +87,25 @@ public class MatchgamePlayFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_matchgame_play, container, false);
+
+        backgroundImageView = (ImageView) rootView.findViewById(R.id.background_imageview);
+
+        final int random = new Random().nextInt(3)+1; // [0, 60] + 20 => [20, 80]
+        StorageReference pathReference = FirebaseStorage.getInstance().getReference("images/"+"home_activity_background"+ random +".JPG");
+        pathReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Picasso.get().load(uri).into(backgroundImageView);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(rootView.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                // Have picasso load in a default image
+                // Picasso.get().load(uri).into(game_image_imageview);
+            }
+        });
 
         gridLayout = rootView.findViewById(R.id.rooLayout);
         textView = rootView.findViewById(R.id.clickCnt);
