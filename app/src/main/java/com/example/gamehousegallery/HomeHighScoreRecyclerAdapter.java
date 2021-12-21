@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,8 +35,9 @@ public class HomeHighScoreRecyclerAdapter extends RecyclerView.Adapter<HomeHighS
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference allHighScoresRef = database.getReference("HighScores");
     SimpleDateFormat localDateFormat= new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-
+    ChildEventListener usersRefListener;
     String game_name;
+
     public HomeHighScoreRecyclerAdapter(RecyclerView fa,List<String> highscores_to_post_key_list,String game_name) {
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
@@ -55,16 +57,10 @@ public class HomeHighScoreRecyclerAdapter extends RecyclerView.Adapter<HomeHighS
     @Override
     public void onBindViewHolder(@NonNull HomeHighScoreRecyclerAdapter.ViewHolder holder, int position) {
 
-        Log.d("onBindView","SCORE_TO_POST - " + game_name);
-        Log.d("onBindView","SCORE_TO_POST - " + score_to_post.toString() + " - SIZE " + score_to_post.size());
-        Log.d("onBindView","POSITION- " + position);
-        Log.d("onBindView","SCORE TO POST AT POSITION- " + score_to_post.get(position));
-
-//        final UserGameDataModel u = highscores_to_Post.get(score_to_post.get(position));
-//        Log.d("onBindView","Game DATAMODEL in RC VIEW - " + u.toString());
-//        final String uid = u.gamedata_uid;
-//
-//        Log.d("onBindView","VALUES  - " + u);
+//        Log.d("onBindView","SCORE_TO_POST - " + game_name);
+//        Log.d("onBindView","SCORE_TO_POST - " + score_to_post.toString() + " - SIZE " + score_to_post.size());
+//        Log.d("onBindView","POSITION- " + position);
+        Log.d("onBindView","SCORES TO POST AND POSITION- " + score_to_post.toString() + " POS" + score_to_post.get(position));
 
         // final String uid=u.gamedata_uid;
         if(holder.ref!=null && holder.refListener!=null)
@@ -72,10 +68,17 @@ public class HomeHighScoreRecyclerAdapter extends RecyclerView.Adapter<HomeHighS
             holder.ref.removeEventListener(holder.refListener);
         }
 
-        holder.ref = allHighScoresRef.child(currentUser.getUid()).child(game_name).child(score_to_post.get(position)).getRef();
+
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        holder.ref = database.getReference("HighScores")
+                .child(currentUser.getUid())
+                .child(game_name)
+                .child(score_to_post.get(position))
+                .getRef();
         holder.ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d("onBindView","B4 Existence Check - "+ dataSnapshot.getKey() +" "+ dataSnapshot.toString() +" " + game_name);
                 if (dataSnapshot.exists()){
                     holder.entryKey=dataSnapshot.getKey();
                     holder.rank.setText(dataSnapshot.child("score_rank").getValue().toString());
@@ -97,9 +100,10 @@ public class HomeHighScoreRecyclerAdapter extends RecyclerView.Adapter<HomeHighS
     }
 
     public void removeListener(){
-//        if(allMovieDataRef !=null && usersRefListener!=null)
-//            allMovieDataRef.removeEventListener(usersRefListener);
+        if(allHighScoresRef !=null && usersRefListener!=null)
+            allHighScoresRef.removeEventListener(usersRefListener);
     }
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -120,7 +124,6 @@ public class HomeHighScoreRecyclerAdapter extends RecyclerView.Adapter<HomeHighS
             score = (TextView) v.findViewById(R.id.score);
             date_of_score = (TextView) v.findViewById(R.id.date_of_score);
             entryKey="";
-//            movie_image = (ImageView) v.findViewById(R.id.movie_image);
 
         }
     }

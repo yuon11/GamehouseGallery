@@ -116,7 +116,6 @@ public class HomeGameFragment extends Fragment {
     String hsBoardSetting="USER";//GLOBAL
     String viewPagerGame;
     String hsBanner;
-    HighScoresDataModel highScoresDataModel;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference allGameData = database.getReference("GameData");
@@ -161,9 +160,7 @@ public class HomeGameFragment extends Fragment {
         game_list = new ArrayList<>();
         key_to_Post = new HashMap<>();
         score_keys_post_list = new ArrayList<>();
-        highScoresDataModel=new HighScoresDataModel(
-                currentUser.getUid(),
-                currentUser.getUid());
+
 
         viewPagerGame="matchmaker";
         setHsBanner();
@@ -293,33 +290,20 @@ public class HomeGameFragment extends Fragment {
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener(){
             @Override
             public void onTabSelected(TabLayout.Tab tab){
+
                 int position = tab.getPosition();
                 viewPagerGame=key_to_Post.get(game_list.get(position)).game_name.toString();
                 setHsBanner();
                 score_keys_post_list.clear();
+                highScoreRecyclerFragmentAdapter.game_name=viewPagerGame;
+                highScoreRecyclerFragmentAdapter.notifyDataSetChanged();
+
                 allHighScoreData.child(currentUser.getUid()).child(viewPagerGame).addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String previousChildName) {
-
-                        //Log.d("onChildAdded", "Datasnapshot - \n" + dataSnapshot.toString());
                         if (!score_keys_post_list.contains(dataSnapshot.getKey())){
-
-                            UserGameDataModel newData = new UserGameDataModel(
-                                    dataSnapshot.getKey(),
-                                    viewPagerGame,
-                                    dataSnapshot.child("score").getValue().toString(),
-                                    dataSnapshot.child("difficulty").getValue().toString(),
-                                    localDateFormat.format(new Date(Long.parseLong(dataSnapshot.child("date_of_score").getValue().toString()))),
-                                    dataSnapshot.child("score_rank").getValue().toString()
-                            );
-
                             score_keys_post_list.add(dataSnapshot.getKey());
-                            highScoresDataModel.setGameScoreData(viewPagerGame, newData);
-                             highScoreRecyclerFragmentAdapter.notifyDataSetChanged();
-
-                            Log.d("onChildAdded", "Score To Post List 2- \n" + score_keys_post_list.toString());
-                            Log.d("onChildAdded", "Score To Post List 2- \n" + score_keys_post_list.size());
-
+                            highScoreRecyclerFragmentAdapter.notifyItemInserted(score_keys_post_list.size());
                         }
                     }
 
@@ -329,20 +313,7 @@ public class HomeGameFragment extends Fragment {
                             Log.d("onChildChanged", "scorelist size - " + score_keys_post_list.size());
                             if(score_keys_post_list.get(i).equals(snapshot.getKey()))
                             {
-                                UserGameDataModel newData = new UserGameDataModel(
-                                        snapshot.getKey(),
-                                        viewPagerGame,
-                                        snapshot.child("score").getValue().toString(),
-                                        snapshot.child("difficulty").getValue().toString(),
-                                        localDateFormat.format(new Date(Long.parseLong(snapshot.child("date_of_score").getValue().toString()))),
-                                        snapshot.child("score_rank").getValue().toString()
-                                );
-
-                                highScoresDataModel.setGameScoreData(viewPagerGame,newData);
                                 highScoreRecyclerFragmentAdapter.notifyItemChanged(i);
-                                highScoreRecyclerFragmentAdapter.notifyDataSetChanged();
-//                                .notifyItemInserted(keyList.size() - 1);
-//                                recyclerView.scrollToPosition(keyList.size() - 1);
                                 break;
                             }
                         }
@@ -354,7 +325,6 @@ public class HomeGameFragment extends Fragment {
                         for (int i = 0; i < score_keys_post_list.size(); i++) {
                             if(score_keys_post_list.get(i).equals(snapshot.getKey()))
                             {
-                                highScoresDataModel.game_name_to_score_map.remove(snapshot.getKey());
                                 score_keys_post_list.remove(i);
                                 highScoreRecyclerFragmentAdapter.notifyItemRemoved(i);
                                 break;

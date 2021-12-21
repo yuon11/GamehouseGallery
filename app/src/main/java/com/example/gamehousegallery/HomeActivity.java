@@ -34,27 +34,6 @@ public class HomeActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-//    DatabaseReference allMovieDataRef = database.getReference("GameData");
-//    SimpleDateFormat localDateFormat= new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-
-    private void backgroundThread(View rootView){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                rootView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        homeGameFragment = new HomeGameFragment();
-                    }
-                });
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    Log.d("Error", e.getLocalizedMessage());
-                }
-            }
-        }).start();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
