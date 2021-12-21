@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             public void onFinish() {
-                titleTextView.setTextColor(getResources().getColor(R.color.bright_red));
+                thisView.setTextColor(getResources().getColor(R.color.bright_red));
                 mp.release();
             }
         }.start();

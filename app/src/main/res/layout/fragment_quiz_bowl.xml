@@ -3,12 +3,50 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:weightSum="http://schemas.android.com/apk/res-auto"
     tools:context=".QuizBowlFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ImageView
+        android:id="@+id/quiz_bowl_imageview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    <LinearLayout
+        android:id="@+id/quiz_bowl_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
-
+        android:gravity="center"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/equation_left"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="30dp"
+            android:hint="Equation Side Left"/>
+        <TextView
+            android:id="@+id/equation_operator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="20dp"
+            android:hint="Equation Operator"/>
+        <TextView
+            android:id="@+id/equation_right"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="30dp"
+            android:textAlignment="center"
+            android:hint="Equation Side Right"/>
+    </LinearLayout>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:gravity="center"
+    android:layout_marginBottom="20dp">
+    <Button
+        android:id="@+id/gen_qst_btn"
+        android:text="GENERATE QUESTION"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</LinearLayout>
 </FrameLayout>
