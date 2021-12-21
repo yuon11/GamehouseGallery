@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
@@ -38,6 +39,7 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class HomeGameFragment extends Fragment {
+
     public class ZoomOutPageTransformer implements ViewPager2.PageTransformer {
         private static final float MIN_SCALE = 0.85f;
         private static final float MIN_ALPHA = 0.5f;
@@ -107,11 +109,13 @@ public class HomeGameFragment extends Fragment {
     ViewPager2 mViewPager;
     TabLayout tabLayout;
     RecyclerView highscoreRecyclerView;
+    TextView gridTextView;
 //    LinearLayout mainLinearLayout;
 
     Button toggleHSBoard;
     String hsBoardSetting="USER";//GLOBAL
-    String viewPagerGame="matchmaker";
+    String viewPagerGame;
+    String hsBanner;
     HighScoresDataModel highScoresDataModel;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -127,18 +131,15 @@ public class HomeGameFragment extends Fragment {
                 rootView.post(new Runnable() {
                     @Override
                     public void run() {
+
                         mViewPager.setAdapter(gameCollectionFragmentAdapter);
                         mViewPager.setPageTransformer((ViewPager2.PageTransformer) (new ZoomOutPageTransformer()));
                         // Recycler View Setup of scoreboard
-
                         if (mViewPager.getAdapter() != null) {
                             new TabLayoutMediator(tabLayout, mViewPager,
                                     (tab, position) -> tab.setText(key_to_Post.get(game_list.get(position)).game_name.toString())
                             ).attach();
-
                         }
-
-
                     }
                 });
                 try {
@@ -158,11 +159,22 @@ public class HomeGameFragment extends Fragment {
         currentUser = mAuth.getCurrentUser();
 
         game_list = new ArrayList<>();
-        score_keys_post_list = new ArrayList<>();
         key_to_Post = new HashMap<>();
+        score_keys_post_list = new ArrayList<>();
         highScoresDataModel=new HighScoresDataModel(
                 currentUser.getUid(),
                 currentUser.getUid());
+
+        viewPagerGame="matchmaker";
+        setHsBanner();
+    }
+
+    public void setHsBanner(){
+        hsBanner="YOUR "+viewPagerGame+ " HIGHSCORE BOARD";
+        if (currentUser.getDisplayName()!=null ||!currentUser.getDisplayName().equals(""))
+            hsBanner=currentUser.getDisplayName()+"'s "+viewPagerGame+ " HIGHSCORE BOARD";
+        if (gridTextView!=null)
+            gridTextView.setText(hsBanner);
     }
 
     @Override
@@ -174,25 +186,27 @@ public class HomeGameFragment extends Fragment {
         highscoreRecyclerView = (RecyclerView) rootView.findViewById(R.id.score_recycler_view);
         mViewPager = (ViewPager2) rootView.findViewById(R.id.pager);
         tabLayout = (TabLayout) rootView.findViewById(R.id.game_tabs);
+        gridTextView = (TextView) rootView.findViewById(R.id.grid_name);
 
-        // mainLinearLayout = (LinearLayout) rootView.findViewById(R.id.main_home_game_layout);
-
-        Log.d("ONCREATEVIEW","");
-
-        // Setup Views to show games In Viewholder
-        gameCollectionFragmentAdapter = new HomeGameFragmentAdapter(HomeGameFragment.this, game_list, key_to_Post);
-        highScoreRecyclerFragmentAdapter = new HomeHighScoreRecyclerAdapter(highscoreRecyclerView,highScoresDataModel.getGameScoreData(viewPagerGame), score_keys_post_list);
-        LinearLayoutManager layoutManager=new LinearLayoutManager(rootView.getContext());
+        LinearLayoutManager layoutManager=new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         layoutManager.scrollToPosition(0);
 
         highscoreRecyclerView.setLayoutManager(layoutManager);
-        highscoreRecyclerView.setAdapter(highScoreRecyclerFragmentAdapter);
         highscoreRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
+        // Setup Views to show games In Viewholder
+        gameCollectionFragmentAdapter = new HomeGameFragmentAdapter(HomeGameFragment.this, game_list, key_to_Post);
+        highScoreRecyclerFragmentAdapter = new HomeHighScoreRecyclerAdapter(highscoreRecyclerView, score_keys_post_list, viewPagerGame);
+        highscoreRecyclerView.setAdapter(highScoreRecyclerFragmentAdapter);
+
+        String hs_banner = currentUser.getDisplayName().toUpperCase()+"'s "+viewPagerGame+ " HIGHSCORE BOARD";
+        gridTextView.setText(hs_banner);
+        // mainLinearLayout = (LinearLayout) rootView.findViewById(R.id.main_home_game_layout);
+
+
+
         // descriptionText.setMovementMethod(new ScrollingMovementMethod());
-
-
         // background thread for view pager adapting and animation
         backgroundThread(rootView);
 
@@ -203,17 +217,16 @@ public class HomeGameFragment extends Fragment {
             public void onClick(View v) {
                 Toast.makeText(rootView.getContext(), "Changing Score Scoreboard", Toast.LENGTH_SHORT).show();
                 if (hsBoardSetting.equals("USER")){
-                    hsBoardSetting="Global";
+                    hsBoardSetting="GLOBAL";
+                    String banner = "GLOBAL "+viewPagerGame+" HIGHSCORE BOARD";
+                    gridTextView.setText(banner);
+                }
+                else{
+                    hsBoardSetting="USER";
+                    setHsBanner();
                 }
             }
         });
-
-        return rootView;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
 
         allGameData.addChildEventListener(new ChildEventListener() {
             @Override
@@ -282,14 +295,15 @@ public class HomeGameFragment extends Fragment {
             public void onTabSelected(TabLayout.Tab tab){
                 int position = tab.getPosition();
                 viewPagerGame=key_to_Post.get(game_list.get(position)).game_name.toString();
+                setHsBanner();
+                score_keys_post_list.clear();
                 allHighScoreData.child(currentUser.getUid()).child(viewPagerGame).addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String previousChildName) {
 
-                        // Log.d("onChildAdded", "Datasnapshot - " + dataSnapshot.toString());
+                        //Log.d("onChildAdded", "Datasnapshot - \n" + dataSnapshot.toString());
                         if (!score_keys_post_list.contains(dataSnapshot.getKey())){
-                            score_keys_post_list.add(dataSnapshot.getKey());
-                            highScoresDataModel.game_name_to_highscore_gamedata.put(dataSnapshot.getKey(), dataSnapshot.getRef());
+
                             UserGameDataModel newData = new UserGameDataModel(
                                     dataSnapshot.getKey(),
                                     viewPagerGame,
@@ -299,17 +313,18 @@ public class HomeGameFragment extends Fragment {
                                     dataSnapshot.child("score_rank").getValue().toString()
                             );
 
+                            score_keys_post_list.add(dataSnapshot.getKey());
+                            highScoresDataModel.setGameScoreData(viewPagerGame, newData);
+                             highScoreRecyclerFragmentAdapter.notifyDataSetChanged();
 
-                            highScoresDataModel.addGameScoreData(viewPagerGame, newData);
-                            //highScoreRecyclerFragmentAdapter.notifyDataSetChanged();
-                            highScoreRecyclerFragmentAdapter.notifyItemInserted(score_keys_post_list.size());
+                            Log.d("onChildAdded", "Score To Post List 2- \n" + score_keys_post_list.toString());
+                            Log.d("onChildAdded", "Score To Post List 2- \n" + score_keys_post_list.size());
+
                         }
                     }
 
                     @Override
                     public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-//                        highScoresDataModel.game_name_to_highscore_gamedata.put(snapshot.getKey(), snapshot.getRef());
-                        // highscores_to_Post.put(snapshot.getKey(),highScoresDataModel);
                         for (int i = 0; i < score_keys_post_list.size(); i++) {
                             Log.d("onChildChanged", "scorelist size - " + score_keys_post_list.size());
                             if(score_keys_post_list.get(i).equals(snapshot.getKey()))
@@ -323,8 +338,11 @@ public class HomeGameFragment extends Fragment {
                                         snapshot.child("score_rank").getValue().toString()
                                 );
 
-                                highScoresDataModel.addGameScoreData(viewPagerGame,newData);
+                                highScoresDataModel.setGameScoreData(viewPagerGame,newData);
                                 highScoreRecyclerFragmentAdapter.notifyItemChanged(i);
+                                highScoreRecyclerFragmentAdapter.notifyDataSetChanged();
+//                                .notifyItemInserted(keyList.size() - 1);
+//                                recyclerView.scrollToPosition(keyList.size() - 1);
                                 break;
                             }
                         }
@@ -336,15 +354,13 @@ public class HomeGameFragment extends Fragment {
                         for (int i = 0; i < score_keys_post_list.size(); i++) {
                             if(score_keys_post_list.get(i).equals(snapshot.getKey()))
                             {
-                                highScoresDataModel.game_name_to_highscore_gamedata.remove(snapshot.getKey());
+                                highScoresDataModel.game_name_to_score_map.remove(snapshot.getKey());
                                 score_keys_post_list.remove(i);
                                 highScoreRecyclerFragmentAdapter.notifyItemRemoved(i);
                                 break;
                             }
                         }
                     }
-
-
                     @Override
                     public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
@@ -363,70 +379,19 @@ public class HomeGameFragment extends Fragment {
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
-//        allHighScoreData.child(currentUser.getUid()).child(viewPagerGame).addChildEventListener(new ChildEventListener() {
-//            @Override
-//            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String previousChildName) {
-//
-//
-//                highScoresDataModel.game_name_to_highscore_gamedata.put(dataSnapshot.getKey(), dataSnapshot.getRef());
-//                UserGameData newData = new UserGameData(
-//                        dataSnapshot.getKey(),
-//                        viewPagerGame,
-//                        dataSnapshot.child("score").getValue().toString(),
-//                        dataSnapshot.child("difficulty").getValue().toString(),
-//                        localDateFormat.format(new Date(Long.parseLong(dataSnapshot.child("date_of_score").getValue().toString()))),
-//                        dataSnapshot.child("score_rank").getValue().toString()
-//                );
-//
-//                highScoresDataModel.addGameScoreData(viewPagerGame, newData);
-////                Log.d("addSCData", "Class Result mm " +
-////                        highScoresDataModel.matchmaker_highscore_data.get(dataSnapshot.getKey()).gamedata_uid);
-//                highScoreRecyclerFragmentAdapter.notifyDataSetChanged();
-//
-//            }
-//
-//            @Override
-//            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-//                highScoresDataModel.game_name_to_highscore_gamedata.put(snapshot.getKey(), snapshot.getRef());
-//
-//                UserGameData newData = new UserGameData(
-//                        snapshot.getKey(),
-//                        viewPagerGame,
-//                        snapshot.child("score").getValue().toString(),
-//                        snapshot.child("difficulty").getValue().toString(),
-//                        localDateFormat.format(new Date(Long.parseLong(snapshot.child("date_of_score").getValue().toString()))),
-//                        snapshot.child("score_rank").getValue().toString()
-//                );
-//
-//                highScoresDataModel.addGameScoreData(viewPagerGame,newData);
-//
-//                // get positionof updated item
-//                highScoreRecyclerFragmentAdapter.notifyItemChanged(highScoresDataModel.getGameScoreData(viewPagerGame).size()-1);
-//
-//            }
-//
-//            @Override
-//            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-//                Log.d("onChildRemoved", "removing element "+snapshot.getKey());
-//
-//                highScoresDataModel.game_name_to_highscore_gamedata.remove(snapshot.getKey());
-//                highScoreRecyclerFragmentAdapter.notifyItemRemoved(highScoresDataModel.getGameScoreData(viewPagerGame).size()-1);
-//            }
-//
-//
-//            @Override
-//            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
+
+        return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
 
 
-        Log.d("END", "Highscore Data Size - " + highScoresDataModel.game_name_to_highscore_gamedata.size());
-        Log.d("END", "Highscore MatchMakerData Size - " + highScoresDataModel.matchmaker_highscore_data.size());
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 }

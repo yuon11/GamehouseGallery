@@ -17,5 +17,13 @@ public class UserGameDataModel {
         this.date_of_score=date_scored;
         this.score_rank = score_rank;
     }
+//    public UserGameDataModel(){
+//        this.gamedata_uid="";
+//        this.game_name=game_name;
+//        this.score=score;
+//        this.difficulty=difficulty;
+//        this.date_of_score=date_scored;
+//        this.score_rank = score_rank;
+//    }
 
 }

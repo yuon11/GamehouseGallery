@@ -60,14 +60,10 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.d("Homeactivity","in on create method");
-
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(R.layout.activity_home);
-
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-
         homeGameFragment = new HomeGameFragment();
     }
 

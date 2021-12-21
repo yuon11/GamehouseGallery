@@ -15,6 +15,8 @@ public class HighScoresDataModel {
     public HashMap<String, UserGameDataModel> pureluck_highscore_data;
     public HashMap<String, UserGameDataModel> quizbowl_highscore_data;
 
+    public HashMap<String, HashMap<String, UserGameDataModel>> game_name_to_score_map;
+
     public HighScoresDataModel(String highscore_data_uid, String user_uid){
 
         this.highscores_uid=highscore_data_uid;
@@ -24,49 +26,26 @@ public class HighScoresDataModel {
         this.pureluck_highscore_data= new HashMap<>();
         this.quizbowl_highscore_data= new HashMap<>();
         this.game_name_to_highscore_gamedata= new HashMap<>();
+        this.game_name_to_score_map= new HashMap<>();
 
+        game_name_to_score_map.put("matchmaker",matchmaker_highscore_data);
+        game_name_to_score_map.put("pureluck",pureluck_highscore_data);
+        game_name_to_score_map.put("quizbowl!",quizbowl_highscore_data);
     }
 
-    public void setGameScoreData(String game_name, HashMap<String, UserGameDataModel> dataInstance){
-        if (game_name.toLowerCase().equals("matchmaker")){
-            matchmaker_highscore_data=dataInstance;
-        }
-        else if (game_name.toLowerCase().equals("pureluck")){
-            pureluck_highscore_data=dataInstance;
-        }
-        else if (game_name.toLowerCase().equals("quizbowl!")){
-            quizbowl_highscore_data=dataInstance;
-        }
-    }
-
-    public void addGameScoreData(String game_name, UserGameDataModel dataInstance){
-
-        if (game_name.toLowerCase().equals("matchmaker")){
-            matchmaker_highscore_data.put(dataInstance.gamedata_uid, dataInstance);
-        }
-        else if (game_name.toLowerCase().equals("pureluck")){
-            pureluck_highscore_data.put(dataInstance.gamedata_uid, dataInstance);
-        }
-        else if (game_name.toLowerCase().equals("quizbowl!")){
-            quizbowl_highscore_data.put(dataInstance.gamedata_uid, dataInstance);
-        }
-
+    public void setGameScoreData(String game_name, UserGameDataModel dataInstance){
+        game_name_to_score_map.get(game_name.toLowerCase())
+                .put(dataInstance.gamedata_uid, dataInstance);
     }
 
     public HashMap<String, UserGameDataModel> getGameScoreData(String game_name){
 
-        if (game_name.toLowerCase().equals("matchmaker")){
-            return matchmaker_highscore_data;
-        }
-        else if (game_name.toLowerCase().equals("pureluck")){
-            return pureluck_highscore_data;
-        }
-        else if (game_name.toLowerCase().equals("quizbowl!")){
-            return quizbowl_highscore_data;
-        }
-        else {
-            HashMap<String, UserGameDataModel> emptyResult = new HashMap<>();
-            return emptyResult;
+        if(game_name_to_score_map.containsKey(game_name))
+            return game_name_to_score_map.get(game_name);
+        else{
+            HashMap<String, UserGameDataModel> new_game_data=new HashMap<>();
+            game_name_to_score_map.put(game_name,new_game_data);
+            return new_game_data;
         }
     }
 }

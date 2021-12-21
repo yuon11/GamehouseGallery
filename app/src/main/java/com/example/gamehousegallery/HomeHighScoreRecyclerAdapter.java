@@ -29,20 +29,19 @@ public class HomeHighScoreRecyclerAdapter extends RecyclerView.Adapter<HomeHighS
     private FirebaseUser currentUser;
     private RecyclerView r;
     private List<String> score_to_post;
-    final private HashMap<String, UserGameDataModel> highscores_to_Post;
     private HashMap<String, UserGameDataModel> filtered_highscores_to_Post;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference allHighScoresRef = database.getReference("HighScores");
     SimpleDateFormat localDateFormat= new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
-    public HomeHighScoreRecyclerAdapter(RecyclerView fa, HashMap<String, UserGameDataModel> highscores_to_Post, List<String> highscores_to_post_key_list) {
-
+    String game_name;
+    public HomeHighScoreRecyclerAdapter(RecyclerView fa,List<String> highscores_to_post_key_list,String game_name) {
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         this.r = fa;
-        this.highscores_to_Post = highscores_to_Post;
         this.score_to_post=highscores_to_post_key_list;
+        this.game_name=game_name;
     }
 
     @NonNull
@@ -56,17 +55,16 @@ public class HomeHighScoreRecyclerAdapter extends RecyclerView.Adapter<HomeHighS
     @Override
     public void onBindViewHolder(@NonNull HomeHighScoreRecyclerAdapter.ViewHolder holder, int position) {
 
+        Log.d("onBindView","SCORE_TO_POST - " + game_name);
+        Log.d("onBindView","SCORE_TO_POST - " + score_to_post.toString() + " - SIZE " + score_to_post.size());
+        Log.d("onBindView","POSITION- " + position);
+        Log.d("onBindView","SCORE TO POST AT POSITION- " + score_to_post.get(position));
 
-        Log.d("onBindView","POSITION - " + score_to_post.toString() + " SIZE " + score_to_post.size());
-        Log.d("onBindView","SIZE OF LIST  - " + highscores_to_Post.size());
-        Log.d("onBindView","KEYSET  - " + highscores_to_Post.keySet());
-        Log.d("onBindView","VALUES  - " + highscores_to_Post.get(score_to_post.get(position)));
-
-        final UserGameDataModel u =highscores_to_Post.get(score_to_post.get(position));
-        final String uid = u.gamedata_uid;
-
-        Log.d("onBindView","VALUES  - " + u);
-
+//        final UserGameDataModel u = highscores_to_Post.get(score_to_post.get(position));
+//        Log.d("onBindView","Game DATAMODEL in RC VIEW - " + u.toString());
+//        final String uid = u.gamedata_uid;
+//
+//        Log.d("onBindView","VALUES  - " + u);
 
         // final String uid=u.gamedata_uid;
         if(holder.ref!=null && holder.refListener!=null)
@@ -74,12 +72,11 @@ public class HomeHighScoreRecyclerAdapter extends RecyclerView.Adapter<HomeHighS
             holder.ref.removeEventListener(holder.refListener);
         }
 
-        holder.ref = allHighScoresRef.child(currentUser.getUid()).child(u.game_name).child(uid).getRef();
+        holder.ref = allHighScoresRef.child(currentUser.getUid()).child(game_name).child(score_to_post.get(position)).getRef();
         holder.ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
-
                     holder.entryKey=dataSnapshot.getKey();
                     holder.rank.setText(dataSnapshot.child("score_rank").getValue().toString());
                     holder.score.setText(dataSnapshot.child("score").getValue().toString());
@@ -92,16 +89,11 @@ public class HomeHighScoreRecyclerAdapter extends RecyclerView.Adapter<HomeHighS
 
             }
         });
-//
-//        } catch (Exception e) {
-//            // p did not contain a valid double
-//            // Toast.makeText(getApplicationContext(),"Rating did not contain a valid double - "+ e.getMessage(), Toast.LENGTH_SHORT).show();
-//        }
     }
 
     @Override
     public int getItemCount() {
-        return highscores_to_Post.size();
+        return score_to_post.size();
     }
 
     public void removeListener(){

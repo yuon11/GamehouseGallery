@@ -93,11 +93,9 @@ public class PureLuckFragment extends Fragment {
     }
 
     private void flipCard() {
-        new Thread(new Runnable() {
+        AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
-                // DO your work here
-                // get the data
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -157,7 +155,8 @@ public class PureLuckFragment extends Fragment {
                     }
                 });
             }
-        }).start();
+        });
+
 
     }
 
